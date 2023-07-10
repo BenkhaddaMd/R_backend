@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Commande extends Model
+class commandesLog extends Model
 {
     protected $fillable = [
-        'numero_table','total','status','commente'
+        'nombre','total'
     ];
-
+    
 }

@@ -8,7 +8,9 @@ use App\categorie;
 use App\plat;
 use App\Commande;
 use App\LineOfCommande;
+use App\commandesLog;
 use Illuminate\Support\Facades\DB;
+
 
 class myController extends Controller
 {
@@ -106,5 +108,80 @@ class myController extends Controller
         ->where('id', $request->id)
         ->update(['status'=>$request->status]);
     }
+
+    public function changeStatusCaissier(Request $request)
+    {
+        return DB::table('commandes')
+        ->where('id', $request->id)
+        ->update(['status'=>$request->status, 'numero_table'=>$request->numero_table]);
+    }
+    public function saveCommands()
+    {
+        $nb = Commande::all()->count();
+        $all = Commande::all();
+        $total = 0;
+        $list = DB::table('commandes')->select('total')->get();
+        foreach ($list as $one)
+        {   
+            $total = $total + (float)$one->total;
+        }
+        DB::table('commandes')->delete();
+        DB::table('line_of_commandes')->delete();
+
+        return  commandesLog::create(['nombre' => $nb, 'total' => $total]);
+    }
     
+    public function getLastDay()
+    {
+        return commandesLog::all()->last()->created_at;
+    } 
+
+    public function getNumOfCat()
+    {
+        return categorie::all()->count();
+    }    
+    
+    public function getNumOfPl()
+    {
+        return plat::all()->count();
+    }
+
+
+    function updateCategory(Request $request)
+    {
+        $oldCat= categorie::findOrFail($request->id)->name;
+
+        DB::table('categories')
+                ->where('id', $request->id)
+                ->update([
+                'name'=>$request->name,
+                'description'=>$request->description,
+                ]);
+
+        DB::table('plats')
+                ->where('categorie', $oldCat)
+                ->update([
+                'categorie'=>$request->name,
+                ]);
+    }
+          
+    function deleteCategory($id)
+    {
+        $catName= categorie::findOrFail($id)->name;
+        categorie::where('id', $id)->delete();
+        plat::where('categorie', $catName)->delete();
+
+    }
+
+    function getCommandsLog()
+    {
+        return DB::table('commandes_logs')->orderBy('id', 'DESC')->limit(7)->get();
+    }
+
+    function deleteEmp($email)
+    {
+        User::where('email', $email)->delete();
+    }
+    
+
 }

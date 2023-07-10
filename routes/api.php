@@ -30,6 +30,15 @@ Route::group([
     Route::get('getCommands', 'myController@getCommands');
     Route::get('getLineCommands/{id}', 'myController@getLineCommands');
     Route::post('changeStatus', 'myController@changeStatus');
+    Route::post('changeStatusCaissier', 'myController@changeStatusCaissier');
 
+    Route::get('saveCommands', 'myController@saveCommands');
+    Route::get('getLastDay', 'myController@getLastDay');
+    Route::get('getNumOfCat', 'myController@getNumOfCat');
+    Route::get('getNumOfPl', 'myController@getNumOfPl');
+    Route::post('updateCategory', 'myController@updateCategory');
+    Route::get('deleteCategory/{id}', 'myController@deleteCategory');
+    Route::get('getCommandsLog', 'myController@getCommandsLog');
+    Route::get('deleteEmp/{id}', 'myController@deleteEmp');
 
 });
